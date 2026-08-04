@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>แดชบอร์ดบุคลากร · โรงพยาบาลหันคา</title>
 <meta name="description" content="ระบบบริหารงานทรัพยากรบุคคล โรงพยาบาลหันคา — ภาพรวมกำลังคนสาธารณสุข">
-<meta name="theme-color" content="#1B4B43">
+<meta name="theme-color" content="#16223F">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -18,7 +18,7 @@
   <header class="topbar">
     <a class="brand" href="index.html">
       <span class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v18M3 12h18" stroke="#E8A33D" stroke-width="3" stroke-linecap="round"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
       </span>
       <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
     </a>
@@ -33,11 +33,22 @@
     </div>
   </header>
 
-  <main class="container">
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="hero-badge">🏥&nbsp; ระบบบริหารงานทรัพยากรบุคคล</span>
+      <h1>บุคลากร<span class="icon-inline"><svg viewBox="0 0 24 24" fill="none"><path d="M6 21V4" stroke="#3E7BFA" stroke-width="1.8" stroke-linecap="round"/><path d="M6 4h11l-2.5 3.5L17 11H6" stroke="#3E7BFA" stroke-width="1.8" stroke-linejoin="round"/></svg></span> ไม่ใช่เอกสาร</h1>
+      <p>ภาพรวมกำลังคนของโรงพยาบาลหันคาแบบเรียลไทม์ ครบทั้งประเภทการจ้าง ตำแหน่ง แนวโน้มเกษียณ และอัตราการลาออก–เข้าใหม่ ดูได้ทันทีโดยไม่ต้องเข้าสู่ระบบ</p>
+      <div class="hero-ctas">
+        <a href="#dashboard-content" class="btn btn-primary">ดูภาพรวมกำลังคน</a>
+        <a href="login.html" class="btn btn-secondary">เข้าสู่ระบบเจ้าหน้าที่</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="container" id="dashboard-content">
     <div class="page-head">
-      <span class="eyebrow">ภาพรวมกำลังคนสาธารณสุข</span>
-      <h1>แดชบอร์ดบุคลากร</h1>
-      <p>ข้อมูลสรุปภาพรวมกำลังคนของโรงพยาบาล ปรับปรุงอัตโนมัติจากฐานข้อมูลบุคลากร หน้านี้เปิดให้บุคคลทั่วไปดูได้โดยไม่ต้องเข้าสู่ระบบ</p>
+      <span class="eyebrow">📊&nbsp; ภาพรวมกำลังคนสาธารณสุข</span>
+      <p>ข้อมูลสรุปภาพรวมกำลังคนของโรงพยาบาล ปรับปรุงอัตโนมัติจากฐานข้อมูลบุคลากร</p>
     </div>
 
     <!-- signature: personnel mosaic -->
