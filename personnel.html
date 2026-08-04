@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>บันทึกข้อมูลรายบุคคล · โรงพยาบาลหันคา</title>
+<meta name="theme-color" content="#16223F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span>
+      <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">แดชบอร์ด</a>
+      <a href="registry.html">ทะเบียนบุคลากร</a>
+      <a href="personnel.html" class="active">บันทึกข้อมูล</a>
+    </nav>
+    <div class="user-chip" id="user-chip"></div>
+  </header>
+
+  <main class="container">
+    <div class="page-head">
+      <span class="eyebrow">สำหรับเจ้าหน้าที่ที่เข้าสู่ระบบ</span>
+      <h1>บันทึกข้อมูลรายบุคคล</h1>
+      <p>ข้อมูลในหน้านี้เป็นฐานข้อมูลหลักของบุคลากรแต่ละคน ใช้เชื่อมโยงกับข้อมูลในหน้าแดชบอร์ดและทะเบียนบุคลากรโดยอัตโนมัติ หากมีการแก้ไขข้อมูลเพิ่มเติมจากหน้าอื่น ให้บันทึกผ่านแบบฟอร์มนี้เพื่อให้ข้อมูลตรงกันทั้งระบบ</p>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <h3>ค้นหาบุคลากรที่มีอยู่แล้ว</h3>
+      <div class="card-sub">เลือกเพื่อแก้ไขข้อมูล หรือเว้นว่างเพื่อบันทึกบุคลากรใหม่</div>
+      <div class="toolbar" style="margin-bottom:0">
+        <select id="existing-picker" style="flex:1; min-width:220px">
+          <option value="">— บันทึกบุคลากรใหม่ —</option>
+        </select>
+        <button class="btn btn-secondary" id="new-btn" type="button">+ บันทึกใหม่</button>
+      </div>
+    </div>
+
+    <div class="msg error" id="form-error"></div>
+    <div class="msg success" id="form-success"></div>
+
+    <form id="personnel-form" class="card form-card">
+      <input type="hidden" id="f-id">
+
+      <fieldset>
+        <legend>ข้อมูลส่วนบุคคล</legend>
+        <div class="field-row">
+          <div class="field"><label for="f-firstName">ชื่อ</label><input id="f-firstName" required></div>
+          <div class="field"><label for="f-lastName">นามสกุล</label><input id="f-lastName" required></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="f-birthDate">วันเดือนปีเกิด</label><input type="date" id="f-birthDate" required></div>
+          <div class="field"><label for="f-phone">เบอร์โทรศัพท์</label><input id="f-phone" placeholder="08x-xxx-xxxx"></div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>ตำแหน่งและสังกัด</legend>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-position">ตำแหน่ง</label>
+            <select id="f-position" required></select>
+          </div>
+          <div class="field">
+            <label for="f-department">กลุ่มงาน</label>
+            <select id="f-department" required></select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-profgroup">กลุ่มวิชาชีพ</label>
+            <select id="f-profgroup" required>
+              <option>แพทย์</option><option>ทันตแพทย์</option><option>เภสัชกร</option>
+              <option>พยาบาล</option><option>สหวิชาชีพ</option><option>สายสนับสนุน</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-specialty">ความเชี่ยวชาญ / สาขา</label>
+            <input id="f-specialty" placeholder="เช่น เวชศาสตร์ครอบครัว">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>สถานะการจ้างงาน</legend>
+        <div class="field-row">
+          <div class="field">
+            <label for="f-emptype">ประเภทการจ้าง</label>
+            <select id="f-emptype" required></select>
+          </div>
+          <div class="field">
+            <label for="f-fte">FTE (ภาระงานเทียบเท่าเต็มเวลา)</label>
+            <select id="f-fte" required>
+              <option value="1.0">1.0 (เต็มเวลา)</option>
+              <option value="0.9">0.9</option>
+              <option value="0.5">0.5 (รายวัน/บางเวลา)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="f-hireDate">วันที่เริ่มปฏิบัติงาน</label><input type="date" id="f-hireDate" required></div>
+          <div class="field">
+            <label for="f-status">สถานะปัจจุบัน</label>
+            <select id="f-status">
+              <option value="active">ปฏิบัติงานอยู่</option>
+              <option value="resigned">ลาออก</option>
+              <option value="retired">เกษียณอายุ</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" id="resign-field" style="display:none">
+          <label for="f-resignDate">วันที่พ้นสภาพ / ลาออก</label>
+          <input type="date" id="f-resignDate">
+        </div>
+      </fieldset>
+
+      <button class="btn btn-primary btn-block" type="submit" id="save-btn">บันทึกข้อมูล</button>
+    </form>
+  </main>
+  <div class="footer-note">© โรงพยาบาลหันคา — ระบบบริหารงานทรัพยากรบุคคล</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mockdata.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>HRHK_AUTH.guardPage();</script>
+<script src="js/personnel.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>

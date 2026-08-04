@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ทะเบียนบุคลากร · โรงพยาบาลหันคา</title>
+<meta name="theme-color" content="#16223F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span>
+      <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">แดชบอร์ด</a>
+      <a href="registry.html" class="active">ทะเบียนบุคลากร</a>
+      <a href="personnel.html">บันทึกข้อมูล</a>
+    </nav>
+    <div class="user-chip" id="user-chip"></div>
+  </header>
+
+  <main class="container">
+    <div class="page-head">
+      <span class="eyebrow">สำหรับเจ้าหน้าที่ที่เข้าสู่ระบบ</span>
+      <h1>ทะเบียนบุคลากร</h1>
+      <p>รายชื่อบุคลากรทั้งหมด แสดงข้อมูลบางส่วนเพื่อความเป็นส่วนตัว ชื่อ-นามสกุลจะถูกปกปิดบางส่วนโดยอัตโนมัติ</p>
+    </div>
+
+    <div class="mask-note">เพื่อความเป็นส่วนตัวของบุคลากร ชื่อ-นามสกุลในหน้านี้จะแสดงเพียงบางส่วน เช่น “ศรา*** ม่ว***”</div>
+
+    <div class="toolbar">
+      <input type="search" id="search-box" placeholder="ค้นหารหัส / ตำแหน่ง / กลุ่มงาน...">
+      <select id="filter-dept"><option value="">ทุกกลุ่มงาน</option></select>
+      <select id="filter-emptype"><option value="">ทุกประเภทการจ้าง</option></select>
+      <select id="filter-status">
+        <option value="active">ปฏิบัติงานอยู่</option>
+        <option value="">ทั้งหมด</option>
+        <option value="resigned">ลาออก</option>
+        <option value="retired">เกษียณ</option>
+      </select>
+      <div class="spacer"></div>
+      <span id="result-count" style="font-size:13px; color:var(--ink-soft)"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>รหัสพนักงาน</th>
+            <th>ชื่อ-นามสกุล</th>
+            <th>ตำแหน่ง</th>
+            <th>กลุ่มงาน</th>
+            <th>กลุ่มวิชาชีพ</th>
+            <th>ประเภทการจ้าง</th>
+            <th>Generation</th>
+            <th>สถานะ</th>
+          </tr>
+        </thead>
+        <tbody id="registry-tbody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="empty-state" style="display:none">ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา</div>
+  </main>
+  <div class="footer-note">© โรงพยาบาลหันคา — ระบบบริหารงานทรัพยากรบุคคล</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mockdata.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>HRHK_AUTH.guardPage();</script>
+<script src="js/registry.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>

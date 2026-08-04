@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>เข้าสู่ระบบ · โรงพยาบาลหันคา</title>
+<meta name="theme-color" content="#16223F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span>
+      <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
+    </a>
+    <nav class="nav-links"><a href="index.html">แดชบอร์ด</a></nav>
+    <div class="user-chip"><span id="mode-badge" class="badge"></span></div>
+  </header>
+
+  <main class="container">
+    <div class="card auth-card">
+      <h1 style="font-size:22px">เข้าสู่ระบบ</h1>
+      <p style="color:var(--ink-soft); font-size:13.5px; margin-top:-6px; margin-bottom:20px">
+        สำหรับเจ้าหน้าที่ที่ต้องการดูทะเบียนบุคลากรและบันทึกข้อมูลรายบุคคล
+      </p>
+      <div class="msg error" id="login-error"></div>
+      <form id="login-form">
+        <div class="field">
+          <label for="username">ชื่อผู้ใช้</label>
+          <input type="text" id="username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">รหัสผ่าน</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="login-btn">เข้าสู่ระบบ</button>
+      </form>
+      <p class="helper-link">ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a></p>
+      <p class="mask-note" style="margin-top:18px">
+        โหมดสาธิต: ใช้ชื่อผู้ใช้ <strong>admin</strong> รหัสผ่าน <strong>admin1234</strong>
+      </p>
+    </div>
+  </main>
+  <div class="footer-note">© โรงพยาบาลหันคา — ระบบบริหารงานทรัพยากรบุคคล</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mockdata.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("login-btn");
+    const errBox = document.getElementById("login-error");
+    errBox.classList.remove("show");
+    btn.disabled = true; btn.textContent = "กำลังเข้าสู่ระบบ...";
+    try {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      const result = await HRHK_API.login(username, password);
+      HRHK_AUTH.setSession(result);
+      const params = new URLSearchParams(location.search);
+      location.href = params.get("next") || "registry.html";
+    } catch (err) {
+      errBox.textContent = err.message || "เข้าสู่ระบบไม่สำเร็จ";
+      errBox.classList.add("show");
+      btn.disabled = false; btn.textContent = "เข้าสู่ระบบ";
+    }
+  });
+</script>
+<script src="js/pwa.js"></script>
+</body>
+</html>

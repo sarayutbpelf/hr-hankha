@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>แดชบอร์ดบุคลากร · โรงพยาบาลหันคา</title>
+<meta name="description" content="ระบบบริหารงานทรัพยากรบุคคล โรงพยาบาลหันคา — ภาพรวมกำลังคนสาธารณสุข">
+<meta name="theme-color" content="#16223F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app-shell">
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+      </span>
+      <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="active">แดชบอร์ด</a>
+      <a href="registry.html">ทะเบียนบุคลากร</a>
+      <a href="personnel.html">บันทึกข้อมูล</a>
+    </nav>
+    <div class="user-chip">
+      <span id="mode-badge" class="badge"></span>
+      <a href="login.html" class="btn-ghost-sm" style="text-decoration:none">เข้าสู่ระบบ</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="hero-badge">🏥&nbsp; ระบบบริหารงานทรัพยากรบุคคล</span>
+      <h1>บุคลากร<span class="icon-inline"><svg viewBox="0 0 24 24" fill="none"><path d="M6 21V4" stroke="#3E7BFA" stroke-width="1.8" stroke-linecap="round"/><path d="M6 4h11l-2.5 3.5L17 11H6" stroke="#3E7BFA" stroke-width="1.8" stroke-linejoin="round"/></svg></span> ไม่ใช่เอกสาร</h1>
+      <p>ภาพรวมกำลังคนของโรงพยาบาลหันคาแบบเรียลไทม์ ครบทั้งประเภทการจ้าง ตำแหน่ง แนวโน้มเกษียณ และอัตราการลาออก–เข้าใหม่ ดูได้ทันทีโดยไม่ต้องเข้าสู่ระบบ</p>
+      <div class="hero-ctas">
+        <a href="#dashboard-content" class="btn btn-primary">ดูภาพรวมกำลังคน</a>
+        <a href="login.html" class="btn btn-secondary">เข้าสู่ระบบเจ้าหน้าที่</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="container" id="dashboard-content">
+    <div class="page-head">
+      <span class="eyebrow">📊&nbsp; ภาพรวมกำลังคนสาธารณสุข</span>
+      <p>ข้อมูลสรุปภาพรวมกำลังคนของโรงพยาบาล ปรับปรุงอัตโนมัติจากฐานข้อมูลบุคลากร</p>
+    </div>
+
+    <!-- signature: personnel mosaic -->
+    <section class="mosaic-wrap">
+      <div>
+        <div class="mosaic-title">ลายแทนกำลังคนทั้งโรงพยาบาล</div>
+        <div class="mosaic-sub">1 ช่อง = 1 คน จัดเรียงและระบายสีตามประเภทการจ้าง เพื่อให้เห็นสัดส่วนกำลังคนทั้งหมดในภาพเดียว</div>
+        <div class="mosaic-total"><span class="num" id="mosaic-total">–</span><span class="lbl">คน ปฏิบัติงานอยู่ในปัจจุบัน</span></div>
+        <div class="mosaic-legend" id="mosaic-legend"></div>
+      </div>
+      <div class="mosaic-grid" id="mosaic-grid" aria-label="แผนภาพจำนวนบุคลากร"></div>
+    </section>
+
+    <!-- top stat cards -->
+    <div class="grid grid-4" id="stat-cards" style="margin-bottom:22px"></div>
+
+    <!-- row: employment type + generation -->
+    <div class="grid grid-2" style="margin-bottom:18px">
+      <div class="card chart-card">
+        <h3>บุคลากรแยกตามประเภทการจ้าง</h3>
+        <div class="card-sub">ข้าราชการ · พนักงานราชการ · พนักงานกระทรวงสาธารณสุข · ลูกจ้างประจำ · ลูกจ้างชั่วคราว</div>
+        <canvas id="chart-emptype" height="240"></canvas>
+      </div>
+      <div class="card chart-card">
+        <h3>บุคลากรแยกตาม Generation</h3>
+        <div class="card-sub">จัดกลุ่มตามช่วงปีเกิดของบุคลากรที่ปฏิบัติงานอยู่</div>
+        <canvas id="chart-generation" height="240"></canvas>
+      </div>
+    </div>
+
+    <!-- row: position by department + professional group -->
+    <div class="grid grid-2" style="margin-bottom:18px">
+      <div class="card chart-card">
+        <h3>จำนวนตามกลุ่มงาน</h3>
+        <div class="card-sub">จำนวนบุคลากรจำแนกตามกลุ่มงานที่สังกัด</div>
+        <canvas id="chart-dept" height="260"></canvas>
+      </div>
+      <div class="card chart-card">
+        <h3>จำนวนตามกลุ่มวิชาชีพ</h3>
+        <div class="card-sub">แพทย์ · ทันตแพทย์ · เภสัชกร · พยาบาล · สหวิชาชีพ · สายสนับสนุน</div>
+        <canvas id="chart-profgroup" height="260"></canvas>
+      </div>
+    </div>
+
+    <!-- row: age trend + FTE -->
+    <div class="grid grid-2" style="margin-bottom:18px">
+      <div class="card chart-card">
+        <h3>กราฟแนวโน้มอายุบุคลากร</h3>
+        <div class="card-sub">การกระจายตัวของอายุบุคลากรที่ปฏิบัติงานอยู่ในปัจจุบัน</div>
+        <canvas id="chart-age" height="240"></canvas>
+      </div>
+      <div class="card chart-card">
+        <h3>จำนวนตาม FTE (Full-Time Equivalent)</h3>
+        <div class="card-sub">สัดส่วนภาระงานเทียบเท่าเต็มเวลาของบุคลากรทั้งหมด</div>
+        <canvas id="chart-fte" height="240"></canvas>
+      </div>
+    </div>
+
+    <!-- row: retirement trend + turnover -->
+    <div class="grid grid-2" style="margin-bottom:18px">
+      <div class="card chart-card">
+        <h3>แนวโน้มการเกษียณอายุราชการ</h3>
+        <div class="card-sub">จำนวนบุคลากรที่จะเกษียณอายุ (60 ปี) ในแต่ละปีถัดจากนี้</div>
+        <canvas id="chart-retire" height="240"></canvas>
+      </div>
+      <div class="card chart-card">
+        <h3>ข้อมูลการลาออก / เข้าใหม่ของพนักงาน</h3>
+        <div class="card-sub">เปรียบเทียบจำนวนบรรจุใหม่และลาออกรายปี</div>
+        <canvas id="chart-turnover" height="240"></canvas>
+      </div>
+    </div>
+
+    <!-- specialty expertise -->
+    <div class="card" style="margin-bottom:18px">
+      <h3>ความเชี่ยวชาญในสาขาวิชาชีพ</h3>
+      <div class="card-sub">สาขาความเชี่ยวชาญที่มีบุคลากรรองรับมากที่สุด 10 อันดับแรก</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>สาขาความเชี่ยวชาญ</th><th>จำนวนบุคลากร</th><th>สัดส่วน</th></tr></thead>
+          <tbody id="specialty-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="footer-note">© โรงพยาบาลหันคา — ระบบบริหารงานทรัพยากรบุคคล · ข้อมูลในหน้านี้เป็นภาพรวมสาธารณะ ไม่แสดงข้อมูลรายบุคคล</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mockdata.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>
