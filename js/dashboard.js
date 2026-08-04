@@ -3,7 +3,7 @@
  * รับผิดชอบ: mosaic, stat cards, กราฟทั้งหมด, ตารางความเชี่ยวชาญ
  */
 (function () {
-  const PALETTE = ["#1B4B43", "#7A9E8E", "#E8A33D", "#C1633F", "#3E7C6F", "#B8935B", "#5B564C", "#A9C4B8"];
+  const PALETTE = ["#3E7BFA", "#8FBEEA", "#E8A33D", "#C1633F", "#16223F", "#4FA98C", "#B8935B", "#A9C4B8"];
   const GEN_ORDER = ["Baby Boomer", "Gen X", "Gen Y", "Gen Z"];
 
   function groupCount(list, keyFn) {
