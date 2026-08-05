@@ -21,11 +21,11 @@
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { font: { family: "IBM Plex Sans Thai", size: 11.5 }, color: "#9A9BA3", boxWidth: 12 } },
+        legend: { labels: { font: { family: "Anuphan", size: 11.5 }, color: "#9A9BA3", boxWidth: 12 } },
       },
       scales: {
-        x: { ticks: { font: { family: "IBM Plex Sans Thai", size: 11 }, color: "#9A9BA3" }, grid: { color: "#3A3B40", display: false } },
-        y: { ticks: { font: { family: "IBM Plex Sans Thai", size: 11 }, color: "#9A9BA3" }, grid: { color: "#2C2D31" }, beginAtZero: true },
+        x: { ticks: { font: { family: "Anuphan", size: 11 }, color: "#9A9BA3" }, grid: { color: "#3A3B40", display: false } },
+        y: { ticks: { font: { family: "Anuphan", size: 11 }, color: "#9A9BA3" }, grid: { color: "#2C2D31" }, beginAtZero: true },
       },
     }, extra || {});
   }

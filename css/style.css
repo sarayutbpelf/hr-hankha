@@ -5,7 +5,7 @@
    Density: airy · Variance: restrained · Motion: subtle
    =========================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
 :root{
   /* surfaces */
@@ -43,8 +43,8 @@
   --shadow-card: 0 2px 12px rgba(0,0,0,.20);
   --shadow-sm: 0 2px 8px rgba(0,0,0,.16);
 
-  --font-display:'Inter','IBM Plex Sans Thai',sans-serif;
-  --font-body:'Inter','IBM Plex Sans Thai',sans-serif;
+  --font-display:'Anuphan',sans-serif;
+  --font-body:'Anuphan',sans-serif;
   --font-mono:'JetBrains Mono','IBM Plex Sans Thai',monospace;
 
   --ease: cubic-bezier(.16,.84,.44,1);
