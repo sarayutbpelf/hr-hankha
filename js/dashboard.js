@@ -3,7 +3,7 @@
  * รับผิดชอบ: mosaic, stat cards, กราฟทั้งหมด, ตารางความเชี่ยวชาญ
  */
 (function () {
-  const PALETTE = ["#3E7BFA", "#8FBEEA", "#E8A33D", "#C1633F", "#16223F", "#4FA98C", "#B8935B", "#A9C4B8"];
+  const PALETTE = ["#00A67E", "#9B4DCA", "#3FD1D6", "#2FBF71", "#5FC7A8", "#B98AD9", "#79DEE1", "#7BD9A0"];
   const GEN_ORDER = ["Baby Boomer", "Gen X", "Gen Y", "Gen Z"];
 
   function groupCount(list, keyFn) {
@@ -21,18 +21,18 @@
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { font: { family: "IBM Plex Sans Thai", size: 11.5 }, color: "#5B564C", boxWidth: 12 } },
+        legend: { labels: { font: { family: "IBM Plex Sans Thai", size: 11.5 }, color: "#9A9BA3", boxWidth: 12 } },
       },
       scales: {
-        x: { ticks: { font: { family: "IBM Plex Sans Thai", size: 11 }, color: "#5B564C" }, grid: { display: false } },
-        y: { ticks: { font: { family: "IBM Plex Sans Thai", size: 11 }, color: "#5B564C" }, grid: { color: "#EFEAE0" }, beginAtZero: true },
+        x: { ticks: { font: { family: "IBM Plex Sans Thai", size: 11 }, color: "#9A9BA3" }, grid: { color: "#3A3B40", display: false } },
+        y: { ticks: { font: { family: "IBM Plex Sans Thai", size: 11 }, color: "#9A9BA3" }, grid: { color: "#2C2D31" }, beginAtZero: true },
       },
     }, extra || {});
   }
 
   function renderMosaic(active) {
     const total = active.length;
-    document.getElementById("mosaic-total").textContent = fmt(total);
+    document.getElementById("hero-total").textContent = fmt(total);
     const byType = groupCount(active, (s) => s.employmentTypeLabel);
     const typeColor = new Map();
     HRHK_MOCK.EMP_TYPES.forEach((t, i) => typeColor.set(t.label, PALETTE[i % PALETTE.length]));
@@ -105,7 +105,7 @@
     const labels = GEN_ORDER.filter((g) => m.has(g));
     new Chart(document.getElementById("chart-generation"), {
       type: "doughnut",
-      data: { labels, datasets: [{ data: labels.map((l) => m.get(l)), backgroundColor: PALETTE, borderWidth: 2, borderColor: "#fff" }] },
+      data: { labels, datasets: [{ data: labels.map((l) => m.get(l)), backgroundColor: PALETTE, borderWidth: 2, borderColor: "#2C2D31" }] },
       options: baseChartOptions({ scales: {} , cutout: "62%"}),
     });
   }
@@ -115,7 +115,7 @@
     const entries = [...m.entries()].sort((a, b) => b[1] - a[1]);
     new Chart(document.getElementById("chart-dept"), {
       type: "bar",
-      data: { labels: entries.map((e) => e[0]), datasets: [{ data: entries.map((e) => e[1]), backgroundColor: "#1B4B43", borderRadius: 5, maxBarThickness: 20 }] },
+      data: { labels: entries.map((e) => e[0]), datasets: [{ data: entries.map((e) => e[1]), backgroundColor: "#00A67E", borderRadius: 5, maxBarThickness: 20 }] },
       options: baseChartOptions({ plugins: { legend: { display: false } }, indexAxis: "y" }),
     });
   }
@@ -135,7 +135,7 @@
     const counts = bins.map(([lo,hi]) => active.filter((s) => s.age >= lo && s.age <= hi).length);
     new Chart(document.getElementById("chart-age"), {
       type: "bar",
-      data: { labels, datasets: [{ data: counts, backgroundColor: "#7A9E8E", borderRadius: 6, maxBarThickness: 40 }] },
+      data: { labels, datasets: [{ data: counts, backgroundColor: "#5FC7A8", borderRadius: 6, maxBarThickness: 40 }] },
       options: baseChartOptions({ plugins: { legend: { display: false } } }),
     });
   }
@@ -144,7 +144,7 @@
     const m = groupCount(active, (s) => "FTE " + s.fte.toFixed(1));
     new Chart(document.getElementById("chart-fte"), {
       type: "pie",
-      data: { labels: [...m.keys()], datasets: [{ data: [...m.values()], backgroundColor: PALETTE, borderWidth: 2, borderColor: "#fff" }] },
+      data: { labels: [...m.keys()], datasets: [{ data: [...m.values()], backgroundColor: PALETTE, borderWidth: 2, borderColor: "#2C2D31" }] },
       options: baseChartOptions({ scales: {} }),
     });
   }
@@ -155,7 +155,7 @@
     const counts = years.map((y) => active.filter((s) => (new Date(s.birthDate).getFullYear() + 60) === y).length);
     new Chart(document.getElementById("chart-retire"), {
       type: "line",
-      data: { labels: years, datasets: [{ label: "จำนวนผู้เกษียณ", data: counts, borderColor: "#C1633F", backgroundColor: "#C1633F33", fill: true, tension: 0.35, pointRadius: 4 }] },
+      data: { labels: years, datasets: [{ label: "จำนวนผู้เกษียณ", data: counts, borderColor: "#E5605A", backgroundColor: "#E5605A33", fill: true, tension: 0.35, pointRadius: 4 }] },
       options: baseChartOptions({}),
     });
   }
@@ -169,8 +169,8 @@
       data: {
         labels: years,
         datasets: [
-          { label: "บรรจุใหม่", data: hires, backgroundColor: "#1B4B43", borderRadius: 5, maxBarThickness: 24 },
-          { label: "ลาออก", data: resigns, backgroundColor: "#C1633F", borderRadius: 5, maxBarThickness: 24 },
+          { label: "บรรจุใหม่", data: hires, backgroundColor: "#00A67E", borderRadius: 5, maxBarThickness: 24 },
+          { label: "ลาออก", data: resigns, backgroundColor: "#E5605A", borderRadius: 5, maxBarThickness: 24 },
         ],
       },
       options: baseChartOptions({}),
