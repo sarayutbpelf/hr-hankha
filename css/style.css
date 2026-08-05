@@ -1,11 +1,11 @@
 /* ===========================================================
    ระบบบริหารงานทรัพยากรบุคคล โรงพยาบาลหันคา
-   Design tokens — v4, ref: CorpScale Design System
-   Enterprise / ERP: navy-gray-blue · serif headings · dense tables
-   Radius capped at 8px · shadows subtle · animations ≤200ms
+   Design tokens — v6, ref: CorpScale Design System (restored)
+   Enterprise / ERP: navy-gray-blue · dense tables · radius ≤8px
+   Font: Anuphan throughout (per request) · JetBrains Mono for codes
    =========================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@600;700&family=Noto+Serif+Thai:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root{
   /* colors */
@@ -48,9 +48,9 @@
   --shadow-medium: 0 2px 6px rgba(15,23,42,.06);
   --shadow-large: 0 6px 16px rgba(15,23,42,.08);
 
-  --font-display:'Noto Serif','Noto Serif Thai',serif;
-  --font-body:'Inter','IBM Plex Sans Thai',sans-serif;
-  --font-mono:'JetBrains Mono','IBM Plex Sans Thai',monospace;
+  --font-display:'Anuphan',sans-serif;
+  --font-body:'Anuphan',sans-serif;
+  --font-mono:'JetBrains Mono','Anuphan',monospace;
 
   --ease: cubic-bezier(.2,0,0,1);
 }
@@ -259,7 +259,7 @@ tbody tr.is-selected{background:#EFF6FF; box-shadow:inset 2px 0 0 var(--primary)
 @media (max-width:560px){ .field-row{grid-template-columns:1fr} }
 fieldset{border:none; padding:0; margin:0 0 var(--sp-6)}
 legend{
-  font-family:var(--font-display); font-weight:700; font-size:16px; color:var(--text);
+  font-family:var(--font-display); font-weight:600; font-size:15px; color:var(--text);
   margin-bottom:var(--sp-3); padding-bottom:var(--sp-2); border-bottom:1px solid var(--border); width:100%;
 }
 
