@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>แดชบอร์ดบุคลากร · โรงพยาบาลหันคา</title>
 <meta name="description" content="ระบบบริหารงานทรัพยากรบุคคล โรงพยาบาลหันคา — ภาพรวมกำลังคนสาธารณสุข">
-<meta name="theme-color" content="#0A1317">
+<meta name="theme-color" content="#1E3A5F">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -14,7 +14,6 @@
 </head>
 <body>
 <div class="app-shell">
-  <div class="promo-banner" id="promo-banner"></div>
 
   <header class="topbar">
     <a class="brand" href="index.html">
@@ -29,6 +28,7 @@
       <a href="personnel.html">บันทึกข้อมูล</a>
     </nav>
     <div class="user-chip">
+      <span id="mode-badge" class="badge"></span>
       <a href="login.html" class="btn-ghost-sm" style="text-decoration:none">เข้าสู่ระบบ</a>
     </div>
   </header>
@@ -47,7 +47,7 @@
     </div>
 
     <!-- personnel visualization panel -->
-    <div class="viz-panel" style="margin-bottom:var(--sp-base)">
+    <div class="viz-panel" style="margin-bottom:var(--sp-4)">
       <div class="viz-head">
         <div>
           <h3 style="margin-bottom:2px">ลายแทนกำลังคนทั้งโรงพยาบาล</h3>

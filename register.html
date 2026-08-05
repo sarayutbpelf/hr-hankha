@@ -4,21 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>สมัครสมาชิก · โรงพยาบาลหันคา</title>
-<meta name="theme-color" content="#0A1317">
+<meta name="theme-color" content="#1E3A5F">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="app-shell">
-  <div class="promo-banner" id="promo-banner"></div>
   <header class="topbar">
     <a class="brand" href="index.html">
       <span class="brand-mark"><img src="icons/logo.png" alt="โลโก้โรงพยาบาลหันคา"></span>
       <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
     </a>
     <nav class="nav-links"><a href="index.html">แดชบอร์ด</a></nav>
-    <div class="user-chip"></div>
+    <div class="user-chip"><span id="mode-badge" class="badge"></span></div>
   </header>
 
   <main class="container">
@@ -27,7 +26,7 @@
     </div>
     <div class="card auth-card">
       <h1 style="font-size:20px">สมัครสมาชิก</h1>
-      <p style="color:var(--steel); font-size:13px; margin-top:-6px; margin-bottom:20px">
+      <p style="color:var(--text-muted); font-size:13px; margin-top:-6px; margin-bottom:20px">
         สำหรับเจ้าหน้าที่ฝ่ายบุคคลและบุคลากรที่ได้รับสิทธิ์เข้าถึงระบบ
       </p>
       <div class="msg error" id="reg-error"></div>
@@ -49,7 +48,7 @@
           <label for="password2">ยืนยันรหัสผ่าน</label>
           <input type="password" id="password2" autocomplete="new-password" minlength="8" required>
         </div>
-        <button class="btn btn-buy btn-block" type="submit" id="reg-btn">สมัครสมาชิก</button>
+        <button class="btn btn-primary btn-block" type="submit" id="reg-btn">สมัครสมาชิก</button>
       </form>
       <p class="helper-link">มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบ</a></p>
     </div>
