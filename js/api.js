@@ -75,13 +75,10 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     if (!isLive() && window.HRHK_MOCK) HRHK_MOCK.ensureSeeded();
-    const banner = document.getElementById("promo-banner");
-    if (banner) {
-      banner.textContent = isLive()
-        ? "เชื่อมต่อฐานข้อมูล Google Sheet แล้ว — ข้อมูลทั้งหมดเป็นข้อมูลจริง"
-        : "โหมดสาธิต — กำลังแสดงข้อมูลจำลอง เชื่อมต่อ Google Sheet ได้ตามขั้นตอนใน README";
-      banner.classList.add("show");
-      if (!isLive()) banner.classList.add("is-warning");
+    const badge = document.getElementById("mode-badge");
+    if (badge) {
+      badge.textContent = isLive() ? "เชื่อมต่อ Google Sheet" : "โหมดสาธิต (ข้อมูลจำลอง)";
+      badge.classList.add(isLive() ? "badge" : "badge amber");
     }
   });
 })();
