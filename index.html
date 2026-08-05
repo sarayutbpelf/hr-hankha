@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>แดชบอร์ดบุคลากร · โรงพยาบาลหันคา</title>
 <meta name="description" content="ระบบบริหารงานทรัพยากรบุคคล โรงพยาบาลหันคา — ภาพรวมกำลังคนสาธารณสุข">
-<meta name="theme-color" content="#202124">
+<meta name="theme-color" content="#0A1317">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -14,6 +14,7 @@
 </head>
 <body>
 <div class="app-shell">
+  <div class="promo-banner" id="promo-banner"></div>
 
   <header class="topbar">
     <a class="brand" href="index.html">
@@ -28,43 +29,37 @@
       <a href="personnel.html">บันทึกข้อมูล</a>
     </nav>
     <div class="user-chip">
-      <span id="mode-badge" class="badge"></span>
       <a href="login.html" class="btn-ghost-sm" style="text-decoration:none">เข้าสู่ระบบ</a>
     </div>
   </header>
 
-  <section class="hero">
-    <div class="hero-grid">
-      <div class="enter enter-1">
-        <span class="hero-badge">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-          ระบบบริหารงานทรัพยากรบุคคล
-        </span>
-        <h1>บุคลากร<br>ไม่ใช่<span class="accent">เอกสาร</span></h1>
-        <p>ภาพรวมกำลังคนของโรงพยาบาลหันคาแบบเรียลไทม์ — ครบทั้งประเภทการจ้าง ตำแหน่ง แนวโน้มเกษียณ และอัตราการลาออก–เข้าใหม่ ดูได้ทันทีโดยไม่ต้องเข้าสู่ระบบ</p>
-        <div class="hero-ctas">
-          <a href="#dashboard-content" class="btn btn-primary">ดูภาพรวมกำลังคน</a>
-          <a href="login.html" class="btn btn-secondary">เข้าสู่ระบบเจ้าหน้าที่</a>
-        </div>
-      </div>
-      <div class="viz-panel enter enter-2">
-        <div class="viz-head">
-          <span class="num" id="hero-total">–</span>
-          <span class="lbl">บุคลากรที่ปฏิบัติงานอยู่ในปัจจุบัน — 1 จุด แทน 1 คน</span>
-        </div>
-        <div class="mosaic-grid" id="mosaic-grid" aria-label="แผนภาพจำนวนบุคลากร"></div>
-        <div class="viz-legend" id="mosaic-legend"></div>
-      </div>
-    </div>
-  </section>
-
   <main class="container" id="dashboard-content">
+    <div class="breadcrumb">
+      <span class="current">แดชบอร์ด</span>
+    </div>
     <div class="page-head">
-      <span class="eyebrow">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="12" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="10" y="7" width="4" height="13" rx="1" stroke="currentColor" stroke-width="1.6"/><rect x="17" y="3" width="4" height="17" rx="1" stroke="currentColor" stroke-width="1.6"/></svg>
-        ภาพรวมกำลังคนสาธารณสุข
-      </span>
-      <p>ข้อมูลสรุปภาพรวมกำลังคนของโรงพยาบาล ปรับปรุงอัตโนมัติจากฐานข้อมูลบุคลากร</p>
+      <div>
+        <span class="overline">ภาพรวมกำลังคนสาธารณสุข</span>
+        <h1>แดชบอร์ดบุคลากร</h1>
+        <p>ข้อมูลสรุปภาพรวมกำลังคนของโรงพยาบาล ปรับปรุงอัตโนมัติจากฐานข้อมูลบุคลากร เปิดให้บุคคลทั่วไปดูได้โดยไม่ต้องเข้าสู่ระบบ</p>
+      </div>
+      <a href="login.html" class="btn btn-secondary">เข้าสู่ระบบเจ้าหน้าที่</a>
+    </div>
+
+    <!-- personnel visualization panel -->
+    <div class="viz-panel" style="margin-bottom:var(--sp-base)">
+      <div class="viz-head">
+        <div>
+          <h3 style="margin-bottom:2px">ลายแทนกำลังคนทั้งโรงพยาบาล</h3>
+          <div class="card-sub" style="margin-bottom:0">1 จุด แทน 1 คน จัดเรียงตามประเภทการจ้าง</div>
+        </div>
+        <div style="text-align:right">
+          <span class="num" id="hero-total">–</span>
+          <span class="lbl" style="display:block">คน ปฏิบัติงานอยู่ในปัจจุบัน</span>
+        </div>
+      </div>
+      <div class="mosaic-grid" id="mosaic-grid" aria-label="แผนภาพจำนวนบุคลากร"></div>
+      <div class="viz-legend" id="mosaic-legend"></div>
     </div>
 
     <!-- top stat cards -->
