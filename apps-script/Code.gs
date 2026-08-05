@@ -22,7 +22,11 @@ const SALT = "hrhk-hospital-2026"; // เกลือสำหรับ hash ร
 const STAFF_HEADERS = [
   "id","firstName","lastName","maskedName","birthDate","age","generation",
   "position","department","professionalGroup","employmentType","employmentTypeLabel",
-  "fte","specialty","hireDate","resignDate","status","phone","updatedAt"
+  "fte","specialty","hireDate","resignDate","status","phone",
+  "licenseNumber","licenseExpiry","cmeHours",
+  "performanceScore","idpGoal","idpStatus","trainingHours",
+  "leaveSick","leavePersonal","leaveVacation",
+  "updatedAt"
 ];
 const USERS_HEADERS = ["username","passwordHash","displayName","employeeId","createdAt"];
 

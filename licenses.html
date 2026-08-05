@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ใบอนุญาต/ใบประกอบวิชาชีพ · วางแผนบุคลากร · โรงพยาบาลหันคา</title>
+<meta name="theme-color" content="#1E3A5F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="icons/logo.png" alt="โลโก้โรงพยาบาลหันคา"></span>
+      <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">แดชบอร์ด</a>
+      <a href="registry.html">ทะเบียนบุคลากร</a>
+      <a href="personnel.html">บันทึกข้อมูล</a>
+      <a href="planning.html" class="active">วางแผนบุคลากร</a>
+    </nav>
+    <div class="user-chip" id="user-chip"></div>
+  </header>
+
+  <main class="container">
+    <div class="breadcrumb">
+      <a href="index.html">แดชบอร์ด</a><span class="sep">/</span>
+      <a href="planning.html">วางแผนบุคลากร</a><span class="sep">/</span>
+      <span class="current">ใบอนุญาต/ใบประกอบวิชาชีพ</span>
+    </div>
+    <div class="page-head">
+      <div>
+        <span class="overline">License &amp; CME Tracking</span>
+        <h1>ใบอนุญาต/ใบประกอบวิชาชีพ</h1>
+        <p>ติดตามวันหมดอายุใบประกอบวิชาชีพของแพทย์ ทันตแพทย์ เภสัชกร และพยาบาล พร้อมชั่วโมงอบรมสะสม (CME) เพื่อเตรียมต่อใบอนุญาตล่วงหน้า</p>
+      </div>
+    </div>
+
+    <div class="grid grid-4" id="stat-cards" style="margin-bottom:20px"></div>
+
+    <div class="mask-note">แสดงเฉพาะบุคลากรที่ปฏิบัติงานอยู่และมีวิชาชีพที่ต้องมีใบอนุญาต (แพทย์ ทันตแพทย์ เภสัชกร พยาบาล) ชื่อแสดงแบบปิดบังบางส่วนเพื่อความเป็นส่วนตัว</div>
+
+    <div class="toolbar">
+      <input type="search" id="search-box" placeholder="ค้นหารหัส / ตำแหน่ง...">
+      <select id="filter-status">
+        <option value="">ทุกสถานะ</option>
+        <option value="expired">หมดอายุแล้ว</option>
+        <option value="expiring">ใกล้หมดอายุ (≤90 วัน)</option>
+        <option value="valid">ปกติ</option>
+      </select>
+      <div class="spacer"></div>
+      <span id="result-count" style="font-size:12px; color:var(--text-muted)"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>รหัสพนักงาน</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>เลขที่ใบอนุญาต</th><th>วันหมดอายุ</th><th>คงเหลือ</th><th>ชั่วโมง CME สะสม</th><th>สถานะ</th></tr>
+        </thead>
+        <tbody id="license-tbody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="empty-state" style="display:none">ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา</div>
+  </main>
+  <div class="footer-note">© โรงพยาบาลหันคา — ระบบบริหารงานทรัพยากรบุคคล</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mockdata.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>HRHK_AUTH.guardPage();</script>
+<script src="js/planning-utils.js"></script>
+<script src="js/licenses.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>

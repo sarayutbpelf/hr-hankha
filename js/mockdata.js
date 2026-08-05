@@ -3,8 +3,13 @@
  * สร้างข้อมูลบุคลากรจำลองที่สมจริงสำหรับโรงพยาบาลชุมชนขนาดกลาง
  * เก็บไว้ใน localStorage คีย์ "hrhk_demo_staff" / "hrhk_demo_users"
  * โครงสร้างข้อมูลถูกออกแบบให้ตรงกับคอลัมน์ใน Google Sheet ตาม README
+ *
+ * v2: เพิ่มฟิลด์สำหรับโมดูลวางแผนบริหารงานบุคคล — ใบอนุญาต/CME,
+ * ผลปฏิบัติงาน/แผนพัฒนารายบุคคล (IDP), วันลา, และกรอบอัตรากำลังมาตรฐาน
  */
 (function () {
+  const SEED_VERSION = 2; // bump this to force re-seed when the schema changes
+
   const THAI_FIRST = ["สมชาย","สมหญิง","วิชัย","วิภา","ประยุทธ","อรุณี","ณัฐพล","ปิยะดา","ธนากร","กมลวรรณ",
     "สุรชัย","วรรณา","ชัยวัฒน์","รัตนา","ศราวุธ","มยุรี","อนุชา","พรทิพย์","วีระ","สุกัญญา",
     "จักรกฤษณ์","นภาพร","ธีรพงษ์","อัจฉรา","สมบัติ","ละออง","กิตติศักดิ์","วราภรณ์","ประเสริฐ","บุษบา",
@@ -38,6 +43,18 @@
     {pos:"แพทย์แผนไทยประยุกต์", group:"สหวิชาชีพ", dept:"กลุ่มงานการแพทย์แผนไทยฯ"},
   ];
 
+  // กรอบอัตรากำลังมาตรฐานต่อตำแหน่ง (ใช้เทียบกับจำนวนจริงในโมดูลอัตรากำลัง)
+  const MANPOWER_FRAME = {
+    "แพทย์": 10, "ทันตแพทย์": 4, "เภสัชกร": 8, "พยาบาลวิชาชีพ": 65,
+    "นักวิชาการสาธารณสุข": 6, "นักเทคนิคการแพทย์": 5, "นักรังสีการแพทย์": 3,
+    "นักกายภาพบำบัด": 3, "นักวิชาการสาธารณสุข (ทันตสาธารณสุข)": 2,
+    "เจ้าพนักงานเภสัชกรรม": 4, "เจ้าพนักงานสาธารณสุข": 6,
+    "เจ้าพนักงานการเงินและบัญชี": 4, "นักจัดการงานทั่วไป": 4,
+    "นักวิชาการคอมพิวเตอร์": 2, "ผู้ช่วยพยาบาล": 20,
+    "พนักงานช่วยเหลือคนไข้": 15, "พนักงานขับรถยนต์": 5,
+    "พนักงานทั่วไป": 8, "แพทย์แผนไทยประยุกต์": 3,
+  };
+
   const EMP_TYPES = [
     {key:"civil", label:"ข้าราชการ", weight:22, fte:1.0},
     {key:"gov_emp", label:"พนักงานราชการ", weight:12, fte:1.0},
@@ -51,6 +68,14 @@
     "เวชศาสตร์ครอบครัว","การพยาบาลผู้ป่วยวิกฤต","การพยาบาลอนามัยชุมชน","เภสัชกรรมคลินิก",
     "ทันตกรรมทั่วไป","รังสีวินิจฉัย","กายภาพบำบัดระบบกระดูกและกล้ามเนื้อ","เวชศาสตร์ฟื้นฟู",
     "ระบาดวิทยา","อาชีวอนามัย","การพยาบาลเวชปฏิบัติ","เทคนิคการแพทย์ห้องปฏิบัติการ", "-"];
+
+  // กลุ่มวิชาชีพที่ต้องมีใบอนุญาตประกอบวิชาชีพ
+  const LICENSE_GROUPS = new Set(["แพทย์", "ทันตแพทย์", "เภสัชกร", "พยาบาล"]);
+
+  const IDP_GOALS = ["พัฒนาทักษะภาวะผู้นำ", "อบรมเฉพาะทางเพิ่มเติม", "พัฒนาทักษะดิจิทัล/ระบบสารสนเทศ",
+    "เตรียมความพร้อมสู่ตำแหน่งบริหาร", "พัฒนาทักษะการสื่อสารกับผู้ป่วย", "อบรมมาตรฐานความปลอดภัยผู้ป่วย",
+    "พัฒนาทักษะการทำงานเป็นทีม", "อบรมเชิงลึกด้านเทคโนโลยีทางการแพทย์"];
+  const IDP_STATUS = ["ยังไม่เริ่ม", "กำลังดำเนินการ", "เสร็จสิ้น"];
 
   function seededRandom(seed) {
     let s = seed;
@@ -80,6 +105,7 @@
     return "Baby Boomer";
   }
   function maskName(name) {
+    if (!name) return "";
     if (name.length <= 2) return name[0] + "*";
     return name[0] + "*".repeat(name.length - 1);
   }
@@ -105,6 +131,29 @@
       }
       if (age >= 60) { status = status === "resigned" ? "resigned" : "retired"; }
 
+      // ---- ใบอนุญาตประกอบวิชาชีพ & CME ----
+      const needsLicense = LICENSE_GROUPS.has(posInfo.group);
+      let licenseNumber = "-", licenseExpiry = null;
+      if (needsLicense) {
+        licenseNumber = "ว." + Math.floor(10000 + rand() * 89999);
+        const roll = rand();
+        if (roll < 0.06) licenseExpiry = randDate(2025, 2026);       // หมดอายุแล้ว/ใกล้มาก
+        else if (roll < 0.18) licenseExpiry = randDate(2026, 2027);  // ใกล้หมดอายุใน ~ปีนี้
+        else licenseExpiry = randDate(2027, 2032);                   // ยังไม่ใกล้หมดอายุ
+      }
+      const cmeHours = needsLicense ? Math.floor(rand() * 60) : 0;
+
+      // ---- ผลปฏิบัติงาน & แผนพัฒนารายบุคคล (IDP) ----
+      const performanceScore = +(2.7 + rand() * 2.3).toFixed(1); // 2.7 - 5.0
+      const idpGoal = pick(IDP_GOALS);
+      const idpStatus = pick(IDP_STATUS);
+      const trainingHours = Math.floor(rand() * 40);
+
+      // ---- วันลา ----
+      const leaveSick = Math.floor(rand() * 16);
+      const leavePersonal = Math.floor(rand() * 10);
+      const leaveVacation = Math.floor(rand() * 10);
+
       staff.push({
         id: "EMP" + String(1000 + i),
         firstName: first,
@@ -124,6 +173,12 @@
         resignDate,
         status, // active | resigned | retired
         phone: "08" + Math.floor(1000000 + rand() * 8999999),
+        // ใบอนุญาต/CME
+        licenseNumber, licenseExpiry, cmeHours,
+        // ผลปฏิบัติงาน/IDP
+        performanceScore, idpGoal, idpStatus, trainingHours,
+        // วันลา
+        leaveSick, leavePersonal, leaveVacation,
         updatedAt: new Date().toISOString(),
       });
     }
@@ -132,9 +187,11 @@
 
   window.HRHK_MOCK = {
     ensureSeeded() {
-      if (!localStorage.getItem("hrhk_demo_staff")) {
+      const seededVersion = Number(localStorage.getItem("hrhk_demo_seed_version") || 0);
+      if (!localStorage.getItem("hrhk_demo_staff") || seededVersion !== SEED_VERSION) {
         const staff = generateStaff(186);
         localStorage.setItem("hrhk_demo_staff", JSON.stringify(staff));
+        localStorage.setItem("hrhk_demo_seed_version", String(SEED_VERSION));
       }
       if (!localStorage.getItem("hrhk_demo_users")) {
         // demo account: user "admin" / password "admin1234"
@@ -147,6 +204,7 @@
     saveStaff(list) { localStorage.setItem("hrhk_demo_staff", JSON.stringify(list)); },
     getUsers() { return JSON.parse(localStorage.getItem("hrhk_demo_users") || "[]"); },
     saveUsers(list) { localStorage.setItem("hrhk_demo_users", JSON.stringify(list)); },
-    EMP_TYPES, POSITIONS, DEPARTMENTS, SPECIALTIES,
+    EMP_TYPES, POSITIONS, DEPARTMENTS, SPECIALTIES, MANPOWER_FRAME,
+    LICENSE_GROUPS, IDP_GOALS, IDP_STATUS,
   };
 })();

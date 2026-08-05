@@ -3,7 +3,7 @@
  * ใช้ path แบบสัมพัทธ์ (relative) เพื่อให้ทำงานถูกต้องเมื่อ deploy บน
  * GitHub Pages ใน sub-path เช่น https://user.github.io/hr-hankha/
  */
-const CACHE_NAME = "hrhk-cache-v1";
+const CACHE_NAME = "hrhk-cache-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -11,6 +11,13 @@ const APP_SHELL = [
   "./register.html",
   "./registry.html",
   "./personnel.html",
+  "./planning.html",
+  "./manpower.html",
+  "./licenses.html",
+  "./succession.html",
+  "./development.html",
+  "./workforce-risk.html",
+  "./orgchart.html",
   "./manifest.json",
   "./css/style.css",
   "./js/config.js",
@@ -20,9 +27,17 @@ const APP_SHELL = [
   "./js/dashboard.js",
   "./js/registry.js",
   "./js/personnel.js",
+  "./js/planning-utils.js",
+  "./js/manpower.js",
+  "./js/licenses.js",
+  "./js/succession.js",
+  "./js/development.js",
+  "./js/workforce-risk.js",
+  "./js/orgchart.js",
   "./js/pwa.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./icons/logo.png",
 ];
 
 self.addEventListener("install", (event) => {

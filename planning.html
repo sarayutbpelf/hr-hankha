@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>วางแผนบุคลากร · โรงพยาบาลหันคา</title>
+<meta name="theme-color" content="#1E3A5F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="icons/logo.png" alt="โลโก้โรงพยาบาลหันคา"></span>
+      <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">แดชบอร์ด</a>
+      <a href="registry.html">ทะเบียนบุคลากร</a>
+      <a href="personnel.html">บันทึกข้อมูล</a>
+      <a href="planning.html" class="active">วางแผนบุคลากร</a>
+    </nav>
+    <div class="user-chip" id="user-chip"></div>
+  </header>
+
+  <main class="container">
+    <div class="breadcrumb">
+      <a href="index.html">แดชบอร์ด</a><span class="sep">/</span><span class="current">วางแผนบุคลากร</span>
+    </div>
+    <div class="page-head">
+      <div>
+        <span class="overline">สำหรับเจ้าหน้าที่ที่เข้าสู่ระบบ</span>
+        <h1>วางแผนบริหารงานบุคคล</h1>
+        <p>ชุดข้อมูลเชิงกลยุทธ์สำหรับวางแผนกำลังคนของโรงพยาบาล ต่อยอดจากข้อมูลทะเบียนบุคลากร ครอบคลุมอัตรากำลัง ใบอนุญาต การสืบทอดตำแหน่ง การพัฒนาบุคลากร ภาระงาน/ความเสี่ยง และโครงสร้างองค์กร</p>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <a href="manpower.html" class="card" style="text-decoration:none; display:block; color:inherit">
+        <h3>อัตรากำลัง</h3>
+        <div class="card-sub">กรอบอัตรากำลังมาตรฐานเทียบกับจำนวนจริง และแผนความต้องการทดแทน 5 ปีข้างหน้า</div>
+      </a>
+      <a href="licenses.html" class="card" style="text-decoration:none; display:block; color:inherit">
+        <h3>ใบอนุญาต/ใบประกอบวิชาชีพ</h3>
+        <div class="card-sub">วันหมดอายุใบประกอบวิชาชีพ ชั่วโมงอบรมสะสม (CME) พร้อมแจ้งเตือนใกล้หมดอายุ</div>
+      </a>
+      <a href="succession.html" class="card" style="text-decoration:none; display:block; color:inherit">
+        <h3>แผนสืบทอดตำแหน่ง</h3>
+        <div class="card-sub">ตำแหน่งสำคัญ ผู้สืบทอดที่เตรียมพร้อม และตำแหน่งเสี่ยงไม่มีผู้สืบทอด</div>
+      </a>
+      <a href="development.html" class="card" style="text-decoration:none; display:block; color:inherit">
+        <h3>สมรรถนะและแผนพัฒนาบุคลากร</h3>
+        <div class="card-sub">ผลประเมินการปฏิบัติงาน ชั่วโมงอบรม และแผนพัฒนารายบุคคล (IDP)</div>
+      </a>
+      <a href="workforce-risk.html" class="card" style="text-decoration:none; display:block; color:inherit">
+        <h3>การลา ภาระงาน และความเสี่ยงด้านคน</h3>
+        <div class="card-sub">สถิติการลา อายุงาน และตัวชี้วัดความเสี่ยงในการลาออก (flight risk)</div>
+      </a>
+      <a href="orgchart.html" class="card" style="text-decoration:none; display:block; color:inherit">
+        <h3>ผังโครงสร้างองค์กร</h3>
+        <div class="card-sub">ภาพรวมกลุ่มงาน จำนวนบุคลากร และผู้ดำรงตำแหน่งอาวุโสสุดของแต่ละกลุ่มงาน</div>
+      </a>
+    </div>
+  </main>
+  <div class="footer-note">© โรงพยาบาลหันคา — ระบบบริหารงานทรัพยากรบุคคล</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mockdata.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>HRHK_AUTH.guardPage();</script>
+<script>document.addEventListener("DOMContentLoaded", () => HRHK_AUTH.renderUserChip("user-chip"));</script>
+<script src="js/pwa.js"></script>
+</body>
+</html>
