@@ -7,11 +7,16 @@
  *     พร้อมหัวตารางตามที่กำหนดไว้ด้านล่าง (ฟังก์ชัน setupSheets() จะสร้างให้อัตโนมัติ)
  *  2. เปิด Extensions > Apps Script แล้ววางไฟล์นี้ทับ Code.gs เดิม
  *  3. รันฟังก์ชัน setupSheets() หนึ่งครั้ง (Run > setupSheets) เพื่อสร้างหัวตาราง
- *     และบัญชีผู้ดูแลระบบเริ่มต้น (admin / admin1234)
+ *     และบัญชีผู้ดูแลระบบเริ่มต้น (admin / admin1234, role admin, สถานะ approved)
  *  4. Deploy > New deployment > Web app
  *       - Execute as: Me
  *       - Who has access: Anyone
  *     คัดลอก URL ที่ได้ไปใส่ใน js/config.js -> GAS_WEB_APP_URL
+ *
+ * ระบบสิทธิ์: ผู้ใช้ใหม่ที่สมัครผ่าน register.html จะได้ role "user" และสถานะ
+ * "pending" (รออนุมัติ) โดยปริยาย ต้องรอผู้ดูแลระบบ (role "admin") อนุมัติก่อน
+ * จึงจะเข้าสู่ระบบได้ ฟังก์ชันจัดการผู้ใช้ทั้งหมดด้านล่าง (listUsers_, updateUserStatus_,
+ * setUserRole_, resetPassword_) ตรวจสอบสิทธิ์ผู้เรียกซ้ำทุกครั้งผ่าน requireAdmin_()
  * ==========================================================================
  */
 
@@ -28,7 +33,7 @@ const STAFF_HEADERS = [
   "leaveSick","leavePersonal","leaveVacation",
   "updatedAt"
 ];
-const USERS_HEADERS = ["username","passwordHash","displayName","employeeId","createdAt"];
+const USERS_HEADERS = ["username","passwordHash","displayName","role","status","createdAt"];
 
 /** ---------- Setup ---------- */
 function setupSheets() {
@@ -38,7 +43,7 @@ function setupSheets() {
 
   const usersSheet = ss.getSheetByName(USERS_SHEET);
   if (usersSheet.getLastRow() < 2) {
-    usersSheet.appendRow(["admin", hashPassword_("admin1234"), "ผู้ดูแลระบบ HR", "", new Date().toISOString()]);
+    usersSheet.appendRow(["admin", hashPassword_("admin1234"), "ผู้ดูแลระบบ HR", "admin", "approved", new Date().toISOString()]);
   }
 }
 function ensureSheet_(ss, name, headers) {
@@ -62,6 +67,10 @@ function doPost(e) {
       case "register": result = register_(payload); break;
       case "listStaff": result = listStaff_(); break;
       case "upsertStaff": result = upsertStaff_(payload); break;
+      case "listUsers": result = listUsers_(payload); break;
+      case "updateUserStatus": result = updateUserStatus_(payload); break;
+      case "setUserRole": result = setUserRole_(payload); break;
+      case "resetPassword": result = resetPassword_(payload); break;
       default: throw new Error("ไม่รู้จักคำสั่ง: " + action);
     }
     return jsonOut_({ result });
@@ -88,14 +97,81 @@ function login_({ username, password }) {
   if (!user || user.passwordHash !== hashPassword_(password)) {
     throw new Error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
   }
-  return { token: Utilities.getUuid(), username: user.username, displayName: user.displayName };
+  if (user.status === "pending") throw new Error("บัญชีนี้ยังไม่ได้รับการอนุมัติจากผู้ดูแลระบบ กรุณารอการอนุมัติก่อนเข้าสู่ระบบ");
+  if (user.status === "suspended") throw new Error("บัญชีนี้ถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
+  return { token: Utilities.getUuid(), username: user.username, displayName: user.displayName, role: user.role || "user" };
 }
 function register_({ username, password, displayName }) {
   if (!username || !password || !displayName) throw new Error("กรุณากรอกข้อมูลให้ครบถ้วน");
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(USERS_SHEET);
   const rows = sheetToObjects_(USERS_SHEET);
   if (rows.some((r) => r.username === username)) throw new Error("มีชื่อผู้ใช้นี้ในระบบแล้ว");
-  sheet.appendRow([username, hashPassword_(password), displayName, "", new Date().toISOString()]);
+  sheet.appendRow([username, hashPassword_(password), displayName, "user", "pending", new Date().toISOString()]);
+  return { ok: true };
+}
+
+/** ---------- Admin: user management (ต้องมี role admin + status approved เท่านั้น) ---------- */
+function requireAdmin_(adminUsername) {
+  if (!adminUsername) throw new Error("ไม่มีสิทธิ์ดำเนินการ (ไม่พบผู้ใช้งาน)");
+  const rows = sheetToObjects_(USERS_SHEET);
+  const admin = rows.find((r) => r.username === adminUsername);
+  if (!admin || admin.role !== "admin" || admin.status !== "approved") {
+    throw new Error("เฉพาะผู้ดูแลระบบเท่านั้นที่ดำเนินการนี้ได้");
+  }
+  return admin;
+}
+function findUserRow_(sheet, headers, username) {
+  const data = sheet.getDataRange().getValues();
+  const col = headers.indexOf("username");
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][col] === username) return i + 1; // 1-indexed sheet row
+  }
+  return -1;
+}
+function listUsers_({ adminUsername }) {
+  requireAdmin_(adminUsername);
+  return sheetToObjects_(USERS_SHEET).map((u) => ({
+    username: u.username, displayName: u.displayName, role: u.role || "user",
+    status: u.status || "approved", createdAt: u.createdAt || null,
+  }));
+}
+function updateUserStatus_({ adminUsername, targetUsername, status }) {
+  requireAdmin_(adminUsername);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(USERS_SHEET);
+  const headers = sheet.getDataRange().getValues()[0];
+  const rowIndex = findUserRow_(sheet, headers, targetUsername);
+  if (rowIndex < 0) throw new Error("ไม่พบผู้ใช้งานนี้");
+
+  if (status === "rejected") {
+    sheet.deleteRow(rowIndex);
+    return { ok: true };
+  }
+  const statusCol = headers.indexOf("status") + 1;
+  sheet.getRange(rowIndex, statusCol).setValue(status);
+  return { ok: true };
+}
+function setUserRole_({ adminUsername, targetUsername, role }) {
+  requireAdmin_(adminUsername);
+  if (adminUsername === targetUsername && role !== "admin") {
+    throw new Error("ไม่สามารถถอดสิทธิ์ผู้ดูแลระบบของตนเองได้");
+  }
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(USERS_SHEET);
+  const headers = sheet.getDataRange().getValues()[0];
+  const rowIndex = findUserRow_(sheet, headers, targetUsername);
+  if (rowIndex < 0) throw new Error("ไม่พบผู้ใช้งานนี้");
+  const roleCol = headers.indexOf("role") + 1;
+  sheet.getRange(rowIndex, roleCol).setValue(role);
+  return { ok: true };
+}
+function resetPassword_({ adminUsername, targetUsername, newPassword }) {
+  requireAdmin_(adminUsername);
+  if (!newPassword || newPassword.length < 8) throw new Error("รหัสผ่านใหม่ต้องมีอย่างน้อย 8 ตัวอักษร");
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(USERS_SHEET);
+  const headers = sheet.getDataRange().getValues()[0];
+  const rowIndex = findUserRow_(sheet, headers, targetUsername);
+  if (rowIndex < 0) throw new Error("ไม่พบผู้ใช้งานนี้");
+  const pwCol = headers.indexOf("passwordHash") + 1;
+  sheet.getRange(rowIndex, pwCol).setValue(hashPassword_(newPassword));
   return { ok: true };
 }
 

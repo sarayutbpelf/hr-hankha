@@ -194,10 +194,20 @@
         localStorage.setItem("hrhk_demo_seed_version", String(SEED_VERSION));
       }
       if (!localStorage.getItem("hrhk_demo_users")) {
-        // demo account: user "admin" / password "admin1234"
+        // demo account: user "admin" / password "admin1234" — สิทธิ์ผู้ดูแลระบบ อนุมัติแล้ว
         localStorage.setItem("hrhk_demo_users", JSON.stringify([
-          { username: "admin", password: "admin1234", displayName: "ผู้ดูแลระบบ HR", employeeId: "EMP1000" }
+          { username: "admin", password: "admin1234", displayName: "ผู้ดูแลระบบ HR", role: "admin", status: "approved", createdAt: new Date().toISOString() }
         ]));
+      } else {
+        // migrate: เติม role/status ให้บัญชีเก่าที่สร้างไว้ก่อนมีระบบสิทธิ์/อนุมัติ
+        const users = JSON.parse(localStorage.getItem("hrhk_demo_users") || "[]");
+        let changed = false;
+        users.forEach((u) => {
+          if (!u.role) { u.role = u.username === "admin" ? "admin" : "user"; changed = true; }
+          if (!u.status) { u.status = "approved"; changed = true; } // บัญชีเก่าถือว่าอนุมัติแล้วโดยปริยาย
+          if (!u.createdAt) { u.createdAt = new Date().toISOString(); changed = true; }
+        });
+        if (changed) localStorage.setItem("hrhk_demo_users", JSON.stringify(users));
       }
     },
     getStaff() { return JSON.parse(localStorage.getItem("hrhk_demo_staff") || "[]"); },

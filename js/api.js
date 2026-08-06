@@ -4,6 +4,11 @@
  *   (ซึ่งอ่าน/เขียนข้อมูลจริงใน Google Sheet)
  * - ถ้ายังไม่ตั้งค่า -> ใช้ข้อมูลจำลองใน localStorage (โหมดสาธิต)
  * หน้าเว็บอื่น ๆ เรียกใช้ผ่าน window.HRHK_API เท่านั้น ไม่ต้องสนใจว่าอยู่โหมดไหน
+ *
+ * ระบบสิทธิ์: ผู้ใช้ใหม่ที่สมัครสมาชิกจะมีสถานะ "pending" (รออนุมัติ) และ role "user"
+ * โดยปริยาย ต้องได้รับการอนุมัติจากผู้ดูแลระบบ (role "admin") ก่อนจึงจะเข้าสู่ระบบได้
+ * ฟังก์ชันจัดการผู้ใช้ (listUsers/updateUserStatus/setUserRole/resetPassword) สงวนไว้
+ * เฉพาะผู้ใช้ที่มี role admin เท่านั้น — ฝั่ง server (Code.gs) ตรวจสอบสิทธิ์ซ้ำอีกชั้นเสมอ
  */
 (function () {
   const isLive = () => !!(window.APP_CONFIG && window.APP_CONFIG.GAS_WEB_APP_URL);
@@ -23,19 +28,27 @@
 
   function delay(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
+  function requireDemoAdmin() {
+    const sess = window.HRHK_AUTH && HRHK_AUTH.getSession();
+    if (!sess || sess.role !== "admin") throw new Error("เฉพาะผู้ดูแลระบบเท่านั้นที่ดำเนินการนี้ได้");
+    return sess;
+  }
+
   // ---------- Demo-mode implementations ----------
   async function demoLogin({ username, password }) {
     await delay(250);
     const users = HRHK_MOCK.getUsers();
     const u = users.find((x) => x.username === username && x.password === password);
     if (!u) throw new Error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-    return { token: "demo-" + btoa(username + ":" + Date.now()), displayName: u.displayName, username: u.username };
+    if (u.status === "pending") throw new Error("บัญชีนี้ยังไม่ได้รับการอนุมัติจากผู้ดูแลระบบ กรุณารอการอนุมัติก่อนเข้าสู่ระบบ");
+    if (u.status === "suspended") throw new Error("บัญชีนี้ถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ");
+    return { token: "demo-" + btoa(username + ":" + Date.now()), displayName: u.displayName, username: u.username, role: u.role || "user" };
   }
   async function demoRegister({ username, password, displayName }) {
     await delay(250);
     const users = HRHK_MOCK.getUsers();
     if (users.find((x) => x.username === username)) throw new Error("มีชื่อผู้ใช้นี้ในระบบแล้ว");
-    users.push({ username, password, displayName });
+    users.push({ username, password, displayName, role: "user", status: "pending", createdAt: new Date().toISOString() });
     HRHK_MOCK.saveUsers(users);
     return { ok: true };
   }
@@ -49,6 +62,46 @@
     else { record.id = record.id || ("EMP" + Date.now()); list.push(record); }
     HRHK_MOCK.saveStaff(list);
     return record;
+  }
+  async function demoListUsers() {
+    await delay(150);
+    requireDemoAdmin();
+    return HRHK_MOCK.getUsers().map((u) => ({ username: u.username, displayName: u.displayName, role: u.role || "user", status: u.status || "approved", createdAt: u.createdAt || null }));
+  }
+  async function demoUpdateUserStatus({ targetUsername, status }) {
+    await delay(200);
+    requireDemoAdmin();
+    const users = HRHK_MOCK.getUsers();
+    if (status === "rejected") {
+      const filtered = users.filter((u) => u.username !== targetUsername);
+      HRHK_MOCK.saveUsers(filtered);
+      return { ok: true };
+    }
+    const u = users.find((x) => x.username === targetUsername);
+    if (!u) throw new Error("ไม่พบผู้ใช้งานนี้");
+    u.status = status;
+    HRHK_MOCK.saveUsers(users);
+    return { ok: true };
+  }
+  async function demoSetUserRole({ targetUsername, role }) {
+    await delay(200);
+    requireDemoAdmin();
+    const users = HRHK_MOCK.getUsers();
+    const u = users.find((x) => x.username === targetUsername);
+    if (!u) throw new Error("ไม่พบผู้ใช้งานนี้");
+    u.role = role;
+    HRHK_MOCK.saveUsers(users);
+    return { ok: true };
+  }
+  async function demoResetPassword({ targetUsername, newPassword }) {
+    await delay(200);
+    requireDemoAdmin();
+    const users = HRHK_MOCK.getUsers();
+    const u = users.find((x) => x.username === targetUsername);
+    if (!u) throw new Error("ไม่พบผู้ใช้งานนี้");
+    u.password = newPassword;
+    HRHK_MOCK.saveUsers(users);
+    return { ok: true };
   }
 
   // ---------- Public API ----------
@@ -70,6 +123,28 @@
     async saveStaff(record) {
       if (isLive()) return callGAS("upsertStaff", record);
       return demoUpsertStaff(record);
+    },
+
+    // ---- เฉพาะผู้ดูแลระบบ (role admin) ----
+    async listUsers() {
+      const sess = HRHK_AUTH.getSession();
+      if (isLive()) return callGAS("listUsers", { adminUsername: sess && sess.username });
+      return demoListUsers();
+    },
+    async updateUserStatus(targetUsername, status) {
+      const sess = HRHK_AUTH.getSession();
+      if (isLive()) return callGAS("updateUserStatus", { adminUsername: sess && sess.username, targetUsername, status });
+      return demoUpdateUserStatus({ targetUsername, status });
+    },
+    async setUserRole(targetUsername, role) {
+      const sess = HRHK_AUTH.getSession();
+      if (isLive()) return callGAS("setUserRole", { adminUsername: sess && sess.username, targetUsername, role });
+      return demoSetUserRole({ targetUsername, role });
+    },
+    async resetPassword(targetUsername, newPassword) {
+      const sess = HRHK_AUTH.getSession();
+      if (isLive()) return callGAS("resetPassword", { adminUsername: sess && sess.username, targetUsername, newPassword });
+      return demoResetPassword({ targetUsername, newPassword });
     },
   };
 
