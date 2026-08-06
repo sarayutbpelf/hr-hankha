@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ผู้ดูแลระบบ · โรงพยาบาลหันคา</title>
+<meta name="theme-color" content="#1E3A5F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><img src="icons/logo.png" alt="โลโก้โรงพยาบาลหันคา"></span>
+      <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">แดชบอร์ด</a>
+      <a href="planning.html">วางแผนบุคลากร</a>
+      <a href="admin.html" class="active">ผู้ดูแลระบบ</a>
+    </nav>
+    <div class="user-chip" id="user-chip"></div>
+  </header>
+
+  <main class="container">
+    <div class="breadcrumb">
+      <a href="index.html">แดชบอร์ด</a><span class="sep">/</span><span class="current">ผู้ดูแลระบบ</span>
+    </div>
+    <div class="page-head">
+      <div>
+        <span class="overline">Admin Only</span>
+        <h1>จัดการผู้ใช้งานระบบ</h1>
+        <p>อนุมัติบัญชีผู้ใช้งานใหม่ กำหนดสิทธิ์ผู้ดูแลระบบ ระงับ/เปิดใช้งานบัญชี และตั้งรหัสผ่านใหม่ให้ผู้ใช้งาน หน้านี้เข้าถึงได้เฉพาะผู้ที่มีสิทธิ์ผู้ดูแลระบบ (role admin) เท่านั้น</p>
+      </div>
+    </div>
+
+    <div class="msg error" id="admin-error"></div>
+    <div class="msg success" id="admin-success"></div>
+
+    <div class="grid grid-4" id="stat-cards" style="margin-bottom:20px"></div>
+
+    <div class="card" style="margin-bottom:20px" id="pending-card">
+      <h3>รายการรออนุมัติ</h3>
+      <div class="card-sub">บัญชีที่สมัครสมาชิกใหม่จะยังเข้าสู่ระบบไม่ได้จนกว่าจะได้รับการอนุมัติ</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อ-นามสกุล</th><th>วันที่สมัคร</th><th>การดำเนินการ</th></tr></thead>
+          <tbody id="pending-tbody"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="pending-empty" style="display:none">ไม่มีรายการรออนุมัติ</div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <h3>ผู้ใช้งานทั้งหมด</h3>
+      <div class="card-sub">จัดการสิทธิ์และสถานะการใช้งานของบัญชีที่อนุมัติแล้ว</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ชื่อผู้ใช้</th><th>ชื่อ-นามสกุล</th><th>สิทธิ์</th><th>สถานะ</th><th>การดำเนินการ</th></tr></thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card form-card">
+      <h3>ตั้งรหัสผ่านใหม่ให้ผู้ใช้งาน</h3>
+      <div class="card-sub">ใช้เมื่อผู้ใช้งานลืมรหัสผ่านหรือต้องการรีเซ็ตรหัสผ่านให้ใหม่</div>
+      <form id="reset-form">
+        <div class="field">
+          <label for="f-target-user">เลือกผู้ใช้งาน</label>
+          <select id="f-target-user" required></select>
+        </div>
+        <div class="field">
+          <label for="f-new-password">รหัสผ่านใหม่</label>
+          <input type="password" id="f-new-password" minlength="8" required placeholder="อย่างน้อย 8 ตัวอักษร">
+        </div>
+        <button class="btn btn-primary" type="submit">ตั้งรหัสผ่านใหม่</button>
+      </form>
+    </div>
+  </main>
+  <div class="footer-note">© โรงพยาบาลหันคา — ระบบบริหารงานทรัพยากรบุคคล</div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/mockdata.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>HRHK_AUTH.guardAdminPage();</script>
+<script src="js/admin.js"></script>
+<script src="js/pwa.js"></script>
+</body>
+</html>
