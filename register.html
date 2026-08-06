@@ -29,6 +29,7 @@
       <p style="color:var(--text-muted); font-size:13px; margin-top:-6px; margin-bottom:20px">
         สำหรับเจ้าหน้าที่ฝ่ายบุคคลและบุคลากรที่ได้รับสิทธิ์เข้าถึงระบบ
       </p>
+      <div class="mask-note" style="text-align:left">บัญชีที่สมัครใหม่จะต้องรอผู้ดูแลระบบอนุมัติก่อน จึงจะเข้าสู่ระบบได้</div>
       <div class="msg error" id="reg-error"></div>
       <div class="msg success" id="reg-success"></div>
       <form id="register-form">
@@ -80,9 +81,9 @@
       const username = document.getElementById("username").value.trim();
       const displayName = document.getElementById("displayName").value.trim();
       await HRHK_API.register(username, password, displayName);
-      okBox.textContent = "สมัครสมาชิกสำเร็จ กำลังนำไปหน้าเข้าสู่ระบบ...";
+      okBox.textContent = "สมัครสมาชิกสำเร็จ บัญชีของคุณจะใช้งานได้หลังผู้ดูแลระบบอนุมัติ กำลังนำไปหน้าเข้าสู่ระบบ...";
       okBox.classList.add("show");
-      setTimeout(() => (location.href = "login.html"), 1200);
+      setTimeout(() => (location.href = "login.html"), 2000);
     } catch (err) {
       errBox.textContent = err.message || "สมัครสมาชิกไม่สำเร็จ";
       errBox.classList.add("show");

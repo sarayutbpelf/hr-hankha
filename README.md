@@ -20,6 +20,7 @@ GitHub Pages และใช้ **Google Sheet เป็นฐานข้อม
 | `workforce-risk.html` การลา/ภาระงาน/ความเสี่ยง | สถิติการลา FTE เฉลี่ย และดัชนีความเสี่ยงลาออก (flight risk) รายบุคคล |
 | `orgchart.html` ผังโครงสร้างองค์กร | ภาพรวมกลุ่มงาน จำนวนบุคลากร และผู้อาวุโสสุดของแต่ละกลุ่มงาน |
 | `login.html` / `register.html` | เข้าสู่ระบบ / สมัครสมาชิกบัญชีผู้ใช้งานระบบ |
+| `admin.html` ผู้ดูแลระบบ | เฉพาะ role admin — อนุมัติ/ปฏิเสธบัญชีใหม่, ตั้ง/ถอดสิทธิ์ผู้ดูแลระบบ, ระงับ/เปิดใช้งานบัญชี, ตั้งรหัสผ่านใหม่ให้ผู้ใช้งาน |
 
 ทุกหน้าข้างต้น (ยกเว้น login/register) ต้องเข้าสู่ระบบก่อนจึงจะดูข้อมูลได้ — ถ้ายังไม่ได้เข้าสู่ระบบ
 ระบบจะพาไปหน้า `login.html` โดยอัตโนมัติ รองรับติดตั้งเป็นแอป (Add to Home Screen) และเปิดใช้งาน
@@ -32,6 +33,7 @@ hr-hankha/
 ├─ index.html            แดชบอร์ด (login)
 ├─ login.html
 ├─ register.html
+├─ admin.html            จัดการผู้ใช้งาน/อนุมัติบัญชี (login + role admin เท่านั้น)
 ├─ planning.html         หน้ารวมโมดูลวางแผนบุคลากร (login)
 ├─ manpower.html         อัตรากำลัง (login)
 ├─ licenses.html         ใบอนุญาต/ใบประกอบวิชาชีพ (login)
@@ -46,7 +48,8 @@ hr-hankha/
 │  ├─ config.js          ตั้งค่า URL ของ Apps Script
 │  ├─ mockdata.js        ข้อมูลจำลอง (โหมดสาธิต)
 │  ├─ api.js             ชั้นเชื่อมต่อข้อมูล (live / demo) — อ่านข้อมูลอย่างเดียว
-│  ├─ auth.js            จัดการ session และ guardPage() ป้องกันทุกหน้า
+│  ├─ auth.js            จัดการ session, guardPage() และ guardAdminPage()
+│  ├─ admin.js           อนุมัติบัญชี/จัดการสิทธิ์/รีเซ็ตรหัสผ่าน (admin.html)
 │  ├─ planning-utils.js  ฟังก์ชันคำนวณร่วมของโมดูลวางแผนบุคลากร
 │  ├─ dashboard.js
 │  ├─ manpower.js / licenses.js / succession.js
@@ -134,6 +137,29 @@ GitHub Pages ได้โดยไม่ต้องแก้ไขเพิ่�
   หัวตาราง Sheet และ `STAFF_HEADERS` ใน `Code.gs`
 - `maskedName` (ชื่อปิดบังบางส่วนที่แสดงในตาราง) คำนวณจาก `firstName`/`lastName` — หากกรอกข้อมูล
   ใน Sheet โดยตรง ควรกรอกคอลัมน์นี้ไว้ด้วย (เช่น "ศรา\*\*\* ม่ว\*\*\*") เพื่อให้หน้าเว็บแสดงผลถูกต้อง
+- คอลัมน์ของ Google Sheet ชีต `Users` กำหนดไว้ใน `apps-script/Code.gs` ตัวแปร `USERS_HEADERS`
+  ประกอบด้วย: `username, passwordHash, displayName, role, status, createdAt` — `role` เป็น
+  `admin` หรือ `user`, `status` เป็น `pending` / `approved` / `suspended`
+
+## ระบบผู้ใช้งาน สิทธิ์ และการอนุมัติบัญชี
+
+ผู้ใช้งานทุกคนมี **role** (`admin` หรือ `user`) และ **status** (`pending` / `approved` /
+`suspended`) ผู้ที่สมัครสมาชิกใหม่ผ่าน `register.html` จะได้ role `user` และ status `pending`
+โดยปริยาย ต้องรอผู้ดูแลระบบอนุมัติที่หน้า **`admin.html`** (มองเห็นเมนูนี้เฉพาะผู้ใช้ role admin)
+ก่อนจึงจะเข้าสู่ระบบได้ หน้าผู้ดูแลระบบทำได้ 4 อย่าง: อนุมัติ/ปฏิเสธบัญชีใหม่, ตั้ง/ถอดสิทธิ์
+ผู้ดูแลระบบ, ระงับ/เปิดใช้งานบัญชี, และตั้งรหัสผ่านใหม่ให้ผู้ใช้งาน
+
+> ⚠️ **สำคัญสำหรับผู้ที่เชื่อมต่อ Google Sheet ไว้แล้วก่อนหน้านี้**: schema ของชีต `Users`
+> เปลี่ยนจาก `username, passwordHash, displayName, employeeId, createdAt` เป็น
+> `username, passwordHash, displayName, role, status, createdAt` ต้องอัปเดต 2 จุดดังนี้
+> 1. เปิดชีต **Users** เพิ่มคอลัมน์หัวตารางใหม่ชื่อ `role` และ `status` (เพิ่มที่ไหนก็ได้ ระบบ
+>    อ่านตามชื่อหัวคอลัมน์ ไม่ยึดตำแหน่ง) แล้วกรอกข้อมูลแถวที่มีอยู่เดิม — บัญชี admin เดิม
+>    ให้ใส่ `role = admin`, `status = approved` ส่วนบัญชีผู้ใช้ทั่วไปที่มีอยู่แล้วแนะนำให้ใส่
+>    `role = user`, `status = approved` (ถือว่าอนุมัติแล้วโดยปริยาย ไม่ต้องอนุมัติซ้ำ)
+> 2. เปิด Apps Script ของโปรเจกต์ วางโค้ดจากไฟล์ `apps-script/Code.gs` ใหม่ทับของเดิม แล้วไปที่
+>    **Deploy > Manage deployments** กดไอคอนดินสอ (แก้ไข) ที่ deployment เดิม เปลี่ยน
+>    **Version เป็น "New version"** แล้วกด Deploy — การบันทึกโค้ดอย่างเดียวไม่ทำให้ URL ที่ deploy
+>    ไว้แล้วใช้โค้ดใหม่ ต้องสร้างเวอร์ชันใหม่และ deploy ทับเสมอ
 
 ## แนวทางการออกแบบ (Design System)
 

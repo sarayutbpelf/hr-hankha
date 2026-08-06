@@ -3,12 +3,13 @@
  * ใช้ path แบบสัมพัทธ์ (relative) เพื่อให้ทำงานถูกต้องเมื่อ deploy บน
  * GitHub Pages ใน sub-path เช่น https://user.github.io/hr-hankha/
  */
-const CACHE_NAME = "hrhk-cache-v3";
+const CACHE_NAME = "hrhk-cache-v4";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./login.html",
   "./register.html",
+  "./admin.html",
   "./planning.html",
   "./manpower.html",
   "./licenses.html",
@@ -30,6 +31,7 @@ const APP_SHELL = [
   "./js/development.js",
   "./js/workforce-risk.js",
   "./js/orgchart.js",
+  "./js/admin.js",
   "./js/pwa.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
