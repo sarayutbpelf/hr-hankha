@@ -8,7 +8,7 @@
  * ผลปฏิบัติงาน/แผนพัฒนารายบุคคล (IDP), วันลา, และกรอบอัตรากำลังมาตรฐาน
  */
 (function () {
-  const SEED_VERSION = 2; // bump this to force re-seed when the schema changes
+  const SEED_VERSION = 3; // bump this to force re-seed when the schema changes
 
   const THAI_FIRST = ["สมชาย","สมหญิง","วิชัย","วิภา","ประยุทธ","อรุณี","ณัฐพล","ปิยะดา","ธนากร","กมลวรรณ",
     "สุรชัย","วรรณา","ชัยวัฒน์","รัตนา","ศราวุธ","มยุรี","อนุชา","พรทิพย์","วีระ","สุกัญญา",
@@ -58,10 +58,10 @@
   const EMP_TYPES = [
     {key:"civil", label:"ข้าราชการ", weight:22, fte:1.0},
     {key:"gov_emp", label:"พนักงานราชการ", weight:12, fte:1.0},
-    {key:"moph_emp", label:"พนักงานกระทรวงสาธารณสุข", weight:28, fte:1.0},
     {key:"perm_hire", label:"ลูกจ้างประจำ", weight:6, fte:1.0},
-    {key:"monthly_hire", label:"ลูกจ้างชั่วคราว(รายเดือน)", weight:20, fte:0.9},
-    {key:"daily_hire", label:"ลูกจ้างชั่วคราว(รายวัน)", weight:12, fte:0.5},
+    {key:"moph_emp", label:"พนักงานกระทรวงสาธารณสุข", weight:28, fte:1.0},
+    {key:"monthly_hire", label:"ลูกจ้างชั่วคราว (รายเดือน)", weight:20, fte:0.9},
+    {key:"daily_hire", label:"ลูกจ้างชั่วคราว (รายวัน)", weight:12, fte:0.5},
   ];
 
   const SPECIALTIES = ["เวชปฏิบัติทั่วไป","อายุรศาสตร์","กุมารเวชศาสตร์","ศัลยศาสตร์ออร์โธปิดิกส์",
