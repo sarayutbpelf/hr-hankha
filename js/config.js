@@ -13,7 +13,7 @@
  * -----------------------------------------------------------------
  */
 window.APP_CONFIG = {
-  GAS_WEB_APP_URL: "", // <-- ใส่ URL ของ Web App ที่ deploy จาก Google Apps Script
+  GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbymjY85zW1NiDsJPs1yeRRt_M7rAO51uGp_AWX0npEVJSKn3pin6nGJDDx3BnxgJL7D/exec", // <-- ใส่ URL ของ Web App ที่ deploy จาก Google Apps Script
   HOSPITAL_NAME: "โรงพยาบาลหันคา",
   HOSPITAL_SUB: "ระบบบริหารงานทรัพยากรบุคคล",
   APP_VERSION: "1.0.0"
