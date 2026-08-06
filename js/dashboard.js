@@ -14,6 +14,15 @@
     }
     return m;
   }
+  /** จัดลำดับ Map ที่ group ตาม employmentTypeLabel ให้ตรงกับลำดับที่กำหนดใน HRHK_MOCK.EMP_TYPES เสมอ */
+  function sortByEmpTypeOrder(map) {
+    const order = HRHK_MOCK.EMP_TYPES.map((t) => t.label);
+    const sorted = new Map();
+    order.forEach((label) => { if (map.has(label)) sorted.set(label, map.get(label)); });
+    // เผื่อมี label แปลกปลอมที่ไม่อยู่ในลำดับมาตรฐาน ให้ต่อท้ายไว้ไม่ให้ข้อมูลหาย
+    map.forEach((v, k) => { if (!sorted.has(k)) sorted.set(k, v); });
+    return sorted;
+  }
   function fmt(n) { return n.toLocaleString("th-TH"); }
 
   function baseChartOptions(extra) {
@@ -33,7 +42,7 @@
   function renderMosaic(active) {
     const total = active.length;
     document.getElementById("hero-total").textContent = fmt(total);
-    const byType = groupCount(active, (s) => s.employmentTypeLabel);
+    const byType = sortByEmpTypeOrder(groupCount(active, (s) => s.employmentTypeLabel));
     const typeColor = new Map();
     HRHK_MOCK.EMP_TYPES.forEach((t, i) => typeColor.set(t.label, PALETTE[i % PALETTE.length]));
 
@@ -89,7 +98,7 @@
   }
 
   function renderEmpType(active) {
-    const m = groupCount(active, (s) => s.employmentTypeLabel);
+    const m = sortByEmpTypeOrder(groupCount(active, (s) => s.employmentTypeLabel));
     new Chart(document.getElementById("chart-emptype"), {
       type: "bar",
       data: {
