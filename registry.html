@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ทะเบียนบุคลากร · โรงพยาบาลหันคา</title>
-<meta name="theme-color" content="#1E3A5F">
+<meta name="theme-color" content="#16223F">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="css/style.css">
@@ -13,29 +13,22 @@
 <div class="app-shell">
   <header class="topbar">
     <a class="brand" href="index.html">
-      <span class="brand-mark"><img src="icons/logo.png" alt="โลโก้โรงพยาบาลหันคา"></span>
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span>
       <span class="brand-text">โรงพยาบาลหันคา<small>ระบบบริหารงานทรัพยากรบุคคล</small></span>
     </a>
     <nav class="nav-links">
       <a href="index.html">แดชบอร์ด</a>
       <a href="registry.html" class="active">ทะเบียนบุคลากร</a>
       <a href="personnel.html">บันทึกข้อมูล</a>
-      <a href="planning.html">วางแผนบุคลากร</a>
     </nav>
     <div class="user-chip" id="user-chip"></div>
   </header>
 
   <main class="container">
-    <div class="breadcrumb">
-      <a href="index.html">แดชบอร์ด</a><span class="sep">/</span><span class="current">ทะเบียนบุคลากร</span>
-    </div>
     <div class="page-head">
-      <div>
-        <span class="overline">สำหรับเจ้าหน้าที่ที่เข้าสู่ระบบ</span>
-        <h1>ทะเบียนบุคลากร</h1>
-        <p>รายชื่อบุคลากรทั้งหมด แสดงข้อมูลบางส่วนเพื่อความเป็นส่วนตัว ชื่อ-นามสกุลจะถูกปกปิดบางส่วนโดยอัตโนมัติ</p>
-      </div>
-      <button class="btn btn-secondary" id="export-btn" type="button">ส่งออก (CSV)</button>
+      <span class="eyebrow">สำหรับเจ้าหน้าที่ที่เข้าสู่ระบบ</span>
+      <h1>ทะเบียนบุคลากร</h1>
+      <p>รายชื่อบุคลากรทั้งหมด แสดงข้อมูลบางส่วนเพื่อความเป็นส่วนตัว ชื่อ-นามสกุลจะถูกปกปิดบางส่วนโดยอัตโนมัติ</p>
     </div>
 
     <div class="mask-note">เพื่อความเป็นส่วนตัวของบุคลากร ชื่อ-นามสกุลในหน้านี้จะแสดงเพียงบางส่วน เช่น “ศรา*** ม่ว***”</div>
@@ -51,21 +44,13 @@
         <option value="retired">เกษียณ</option>
       </select>
       <div class="spacer"></div>
-      <span id="result-count" style="font-size:12px; color:var(--text-muted)"></span>
-    </div>
-
-    <div class="bulk-bar" id="bulk-bar">
-      <span id="bulk-count">เลือกแล้ว 0 รายการ</span>
-      <div class="spacer"></div>
-      <button type="button" id="bulk-export">ส่งออกที่เลือก</button>
-      <button type="button" id="bulk-clear">ล้างการเลือก</button>
+      <span id="result-count" style="font-size:13px; color:var(--ink-soft)"></span>
     </div>
 
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th class="col-check"><input type="checkbox" class="row-checkbox" id="select-all" aria-label="เลือกทั้งหมด"></th>
             <th>รหัสพนักงาน</th>
             <th>ชื่อ-นามสกุล</th>
             <th>ตำแหน่ง</th>
