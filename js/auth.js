@@ -42,7 +42,7 @@
       });
       // แสดงลิงก์เฉพาะผู้ดูแลระบบ (เช่นเมนู "ผู้ดูแลระบบ" ในนาว์บาร์) ที่ซ่อนไว้เป็นค่าเริ่มต้น
       if (sess.role === "admin") {
-        document.querySelectorAll(".admin-only").forEach((n) => { n.style.display = ""; });
+        document.querySelectorAll(".admin-only").forEach((n) => { n.classList.remove("admin-only"); });
       }
     },
   };
